@@ -14,7 +14,7 @@ describe('Loading Component', () => {
   it('harus menampilkan teks loading default', () => {
     render(<Loading />);
 
-    expect(screen.getByText('Memuat...')).toBeInTheDocument();
+    expect(screen.getByText('Teks Salah')).toBeInTheDocument();
   });
 
   it('harus menampilkan teks loading sesuai props', () => {
