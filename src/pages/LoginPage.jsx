@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 
 import {
   HiOutlineMail,
@@ -14,9 +14,6 @@ import {
 } from '../states/auth';
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,13 +22,17 @@ function LoginPage() {
     error,
   } = useSelector((state) => state.auth);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
+  const onSubmit = async (data) => {
     const result = await dispatch(
       login({
-        email,
-        password,
+        email: data.email,
+        password: data.password,
       }),
     );
 
@@ -66,7 +67,7 @@ function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <label
                 htmlFor="email"
@@ -81,15 +82,19 @@ function LoginPage() {
                 <input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(event) =>
-                    setEmail(event.target.value)
-                  }
                   placeholder="Masukkan email"
-                  required
+                  {...register('email', {
+                    required: 'Email wajib diisi',
+                  })}
                   className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
+
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -106,15 +111,19 @@ function LoginPage() {
                 <input
                   id="password"
                   type="password"
-                  value={password}
-                  onChange={(event) =>
-                    setPassword(event.target.value)
-                  }
                   placeholder="Masukkan password"
-                  required
+                  {...register('password', {
+                    required: 'Password wajib diisi',
+                  })}
                   className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
+
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <button
